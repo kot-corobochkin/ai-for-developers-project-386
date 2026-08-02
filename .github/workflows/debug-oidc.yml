@@ -22,13 +22,13 @@ jobs:
           echo "$TOKEN" > /tmp/oidc.json
           echo "VALUE_LEN: $(python3 -c "import json; print(len(json.load(open('/tmp/oidc.json'))['value']))")"
           python3 -c "
-import json,base64
-v=json.load(open('/tmp/oidc.json'))['value']
-payload=v.split('.')[1]
-payload+='='*(-len(payload)%4)
-c=json.loads(base64.urlsafe_b64decode(payload))
-print('CLAIMS:', json.dumps({k:c.get(k) for k in ['iss','aud','sub','exp','iat']}))
-"
+          import json,base64
+          v=json.load(open('/tmp/oidc.json'))['value']
+          payload=v.split('.')[1]
+          payload+='='*(-len(payload)%4)
+          c=json.loads(base64.urlsafe_b64decode(payload))
+          print('CLAIMS:', json.dumps({k:c.get(k) for k in ['iss','aud','sub','exp','iat']}))
+          "
 
       - name: Check app installation
         shell: bash
