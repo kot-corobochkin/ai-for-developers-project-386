@@ -1,0 +1,37 @@
+name: debug-oidc
+
+on:
+  workflow_dispatch:
+
+jobs:
+  debug:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+      issues: read
+      pull-requests: read
+    steps:
+      - name: Get OIDC token
+        id: oidc
+        shell: bash
+        run: |
+          TOKEN=$(curl -sS \
+            -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=opencode-github-action")
+          echo "$TOKEN" > /tmp/oidc.json
+          echo "TOKEN_PREFIX: $(cat /tmp/oidc.json | head -c 80)"
+          python3 -c "import json; print('VALUE_LEN:', len(json.load(open('/tmp/oidc.json'))['value']))"
+
+      - name: Exchange OIDC token
+        shell: bash
+        run: |
+          VALUE=$(python3 -c "import json; print(json.load(open('/tmp/oidc.json'))['value'])")
+          echo "--- exchange_github_app_token ---"
+          curl -sS -w "\nHTTP:%{http_code} size:%{size_download}\n" \
+            -X POST https://api.opencode.ai/exchange_github_app_token \
+            -H "Authorization: Bearer $VALUE" \
+            -H "Content-Type: application/json" \
+            -o /tmp/exchange.txt
+          head -c 500 /tmp/exchange.txt
+          echo
