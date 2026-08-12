@@ -1,0 +1,11 @@
+.git
+.github
+**/node_modules
+**/dist
+**/.env
+e2e/test-results
+e2e/playwright-report
+frontend
+typespec
+Agents
+README.md

@@ -1,0 +1,724 @@
+openapi: 3.0.0
+info:
+  title: Calendar API
+  version: 1.0.0
+tags: []
+paths:
+  /api/admin/availability-exceptions:
+    post:
+      operationId: AdminApi_createAvailabilityException
+      description: Creates an owner-unavailable interval.
+      parameters: []
+      responses:
+        '201':
+          description: The request has succeeded and a new resource has been created as a result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AvailabilityException'
+        '400':
+          description: 400 response for malformed parameters or request bodies.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '409':
+          description: 409 response when the requested state conflicts with existing data.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '422':
+          description: 422 response when a domain rule is violated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAvailabilityExceptionRequest'
+    get:
+      operationId: AdminApi_listAvailabilityExceptions
+      description: Returns unavailable intervals overlapping the requested period.
+      parameters:
+        - name: from
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+          explode: false
+        - name: to
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+          explode: false
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AvailabilityException'
+        '400':
+          description: 400 response for malformed parameters or request bodies.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '422':
+          description: 422 response when a domain rule is violated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /api/admin/availability-exceptions/{exceptionId}:
+    delete:
+      operationId: AdminApi_deleteAvailabilityException
+      description: Removes an unavailable interval.
+      parameters:
+        - name: exceptionId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/EntityId'
+      responses:
+        '204':
+          description: 'There is no content to send for this request, but the headers may be useful. '
+        '404':
+          description: 404 response when a requested entity does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /api/admin/bookings:
+    get:
+      operationId: AdminApi_listBookings
+      description: Returns upcoming bookings by default, ordered by startsAt.
+      parameters:
+        - name: from
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+          explode: false
+        - name: to
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+          explode: false
+        - name: status
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/BookingStatus'
+          explode: false
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Booking'
+        '400':
+          description: 400 response for malformed parameters or request bodies.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '422':
+          description: 422 response when a domain rule is violated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /api/admin/event-types:
+    get:
+      operationId: AdminApi_listEventTypes
+      description: Returns all event types, including inactive ones.
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EventType'
+        '400':
+          description: 400 response for malformed parameters or request bodies.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+    post:
+      operationId: AdminApi_createEventType
+      description: Creates an active event type.
+      parameters: []
+      responses:
+        '201':
+          description: The request has succeeded and a new resource has been created as a result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventType'
+        '400':
+          description: 400 response for malformed parameters or request bodies.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '409':
+          description: 409 response when the requested state conflicts with existing data.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '422':
+          description: 422 response when a domain rule is violated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateEventTypeRequest'
+  /api/admin/event-types/{eventTypeId}:
+    get:
+      operationId: AdminApi_getEventType
+      description: Returns an event type, whether active or inactive.
+      parameters:
+        - name: eventTypeId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/EntityId'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventType'
+        '404':
+          description: 404 response when a requested entity does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+    patch:
+      operationId: AdminApi_updateEventType
+      description: Partially updates an event type without changing existing bookings.
+      parameters:
+        - name: eventTypeId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/EntityId'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventType'
+        '400':
+          description: 400 response for malformed parameters or request bodies.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '404':
+          description: 404 response when a requested entity does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '409':
+          description: 409 response when the requested state conflicts with existing data.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '422':
+          description: 422 response when a domain rule is violated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateEventTypeRequest'
+    delete:
+      operationId: AdminApi_deleteEventType
+      description: Deactivates an event type while preserving existing bookings.
+      parameters:
+        - name: eventTypeId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/EntityId'
+      responses:
+        '204':
+          description: 'There is no content to send for this request, but the headers may be useful. '
+        '404':
+          description: 404 response when a requested entity does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '409':
+          description: 409 response when the requested state conflicts with existing data.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /api/public/bookings:
+    post:
+      operationId: PublicApi_createBooking
+      description: Creates a booking after rechecking that the requested slot is still free.
+      parameters: []
+      responses:
+        '201':
+          description: The request has succeeded and a new resource has been created as a result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+        '400':
+          description: 400 response for malformed parameters or request bodies.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '404':
+          description: 404 response when a requested entity does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '409':
+          description: 409 response when the requested state conflicts with existing data.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '422':
+          description: 422 response when a domain rule is violated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBookingRequest'
+  /api/public/event-types:
+    get:
+      operationId: PublicApi_listActiveEventTypes
+      description: Returns only active event types.
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EventType'
+        '400':
+          description: 400 response for malformed parameters or request bodies.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /api/public/event-types/{eventTypeId}:
+    get:
+      operationId: PublicApi_getActiveEventType
+      description: Returns one active event type.
+      parameters:
+        - name: eventTypeId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/EntityId'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventType'
+        '404':
+          description: 404 response when a requested entity does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '422':
+          description: 422 response when a domain rule is violated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /api/public/event-types/{eventTypeId}/slots:
+    get:
+      operationId: PublicApi_getAvailableSlots
+      description: Returns free slots in the requested date range, limited to the 14-day booking window.
+      parameters:
+        - name: eventTypeId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/EntityId'
+        - name: from
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+          explode: false
+        - name: to
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+          explode: false
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Slot'
+        '400':
+          description: 400 response for malformed parameters or request bodies.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '404':
+          description: 404 response when a requested entity does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '422':
+          description: 422 response when a domain rule is violated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /api/public/owner:
+    get:
+      operationId: PublicApi_getOwner
+      description: Returns the public profile of the calendar owner.
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicOwner'
+        '404':
+          description: 404 response when a requested entity does not exist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+components:
+  schemas:
+    ApiError:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          allOf:
+            - $ref: '#/components/schemas/ApiErrorCode'
+          description: Stable machine-readable error code.
+        message:
+          type: string
+          description: Human-readable explanation.
+        field:
+          type: string
+          description: Optional invalid request field name.
+      description: Standard error payload returned by the API.
+    ApiErrorCode:
+      type: string
+      enum:
+        - VALIDATION_ERROR
+        - OWNER_NOT_FOUND
+        - EVENT_TYPE_NOT_FOUND
+        - EVENT_TYPE_INACTIVE
+        - SLOT_OUTSIDE_BOOKING_WINDOW
+        - SLOT_UNAVAILABLE
+        - BOOKING_CONFLICT
+        - AVAILABILITY_EXCEPTION_CONFLICT
+      description: Standard error payload returned by the API.
+    AvailabilityException:
+      type: object
+      required:
+        - id
+        - startsAt
+        - endsAt
+        - createdAt
+      properties:
+        id:
+          $ref: '#/components/schemas/EntityId'
+        startsAt:
+          $ref: '#/components/schemas/Rfc3339DateTime'
+        endsAt:
+          $ref: '#/components/schemas/Rfc3339DateTime'
+        reason:
+          type: string
+        createdAt:
+          $ref: '#/components/schemas/Rfc3339DateTime'
+      description: A period during which the owner is unavailable.
+    Booking:
+      type: object
+      required:
+        - id
+        - eventTypeId
+        - eventTypeTitle
+        - guestName
+        - guestEmail
+        - startsAt
+        - endsAt
+        - status
+        - createdAt
+      properties:
+        id:
+          allOf:
+            - $ref: '#/components/schemas/EntityId'
+          description: Unique booking identifier.
+        eventTypeId:
+          allOf:
+            - $ref: '#/components/schemas/EntityId'
+          description: Identifier of the selected event type.
+        eventTypeTitle:
+          type: string
+          description: Event title at the time the booking was created.
+        guestName:
+          type: string
+          description: Guest's name stored on the booking.
+        guestEmail:
+          type: string
+          description: Guest's email stored on the booking.
+        startsAt:
+          allOf:
+            - $ref: '#/components/schemas/Rfc3339DateTime'
+          description: Start of the booked meeting.
+        endsAt:
+          allOf:
+            - $ref: '#/components/schemas/Rfc3339DateTime'
+          description: End calculated by the server from the event duration.
+        status:
+          allOf:
+            - $ref: '#/components/schemas/BookingStatus'
+          description: Current booking state.
+        createdAt:
+          allOf:
+            - $ref: '#/components/schemas/Rfc3339DateTime'
+          description: Creation timestamp.
+        cancelledAt:
+          allOf:
+            - $ref: '#/components/schemas/Rfc3339DateTime'
+          description: Set when the booking is cancelled.
+      description: A booking with the event title preserved as historical data.
+    BookingStatus:
+      type: string
+      enum:
+        - confirmed
+        - cancelled
+      description: A booking lifecycle state.
+    CalendarApiVersions:
+      type: string
+      enum:
+        - 1.0.0
+    CreateAvailabilityExceptionRequest:
+      type: object
+      required:
+        - startsAt
+        - endsAt
+      properties:
+        startsAt:
+          $ref: '#/components/schemas/Rfc3339DateTime'
+        endsAt:
+          $ref: '#/components/schemas/Rfc3339DateTime'
+        reason:
+          type: string
+      description: Fields accepted when creating an unavailable interval.
+    CreateBookingRequest:
+      type: object
+      required:
+        - eventTypeId
+        - startsAt
+        - guestName
+        - guestEmail
+      properties:
+        eventTypeId:
+          $ref: '#/components/schemas/EntityId'
+        startsAt:
+          allOf:
+            - $ref: '#/components/schemas/Rfc3339DateTime'
+          description: Requested start; the server calculates endsAt.
+        guestName:
+          type: string
+        guestEmail:
+          type: string
+      description: Fields accepted from a guest when creating a booking.
+    CreateEventTypeRequest:
+      type: object
+      required:
+        - title
+        - durationMinutes
+      properties:
+        title:
+          type: string
+          description: Non-empty event title.
+        description:
+          type: string
+          description: Optional event description.
+        durationMinutes:
+          type: integer
+          format: int32
+          description: Positive meeting duration in minutes.
+      description: Fields accepted when creating an event type.
+    EntityId:
+      type: string
+      description: A stable identifier represented as a string.
+    EventType:
+      type: object
+      required:
+        - id
+        - title
+        - durationMinutes
+        - isActive
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          allOf:
+            - $ref: '#/components/schemas/EntityId'
+          description: Unique event type identifier.
+        title:
+          type: string
+          description: Non-empty event title.
+        description:
+          type: string
+          description: Optional event description.
+        durationMinutes:
+          type: integer
+          format: int32
+          description: Positive meeting duration in minutes.
+        isActive:
+          type: boolean
+          description: Whether this type can receive new bookings.
+        createdAt:
+          allOf:
+            - $ref: '#/components/schemas/Rfc3339DateTime'
+          description: Creation timestamp.
+        updatedAt:
+          allOf:
+            - $ref: '#/components/schemas/Rfc3339DateTime'
+          description: Last modification timestamp.
+      description: An event type offered for booking.
+    Owner:
+      type: object
+      required:
+        - id
+        - fullName
+        - email
+        - timezone
+      properties:
+        id:
+          allOf:
+            - $ref: '#/components/schemas/EntityId'
+          description: Unique owner identifier.
+        fullName:
+          type: string
+          description: Display name shown to guests.
+        email:
+          type: string
+          description: Owner's email address.
+        timezone:
+          type: string
+          description: IANA timezone, for example Europe/Moscow.
+      description: The single calendar owner's profile.
+    PublicOwner:
+      type: object
+      required:
+        - fullName
+        - email
+        - timezone
+      properties:
+        fullName:
+          type: string
+          description: Display name shown to guests.
+        email:
+          type: string
+          description: Owner's email address.
+        timezone:
+          type: string
+          description: IANA timezone, for example Europe/Moscow.
+      description: Public subset of the owner's profile.
+    Rfc3339DateTime:
+      type: string
+      format: date-time
+      description: RFC 3339 date-time value including its UTC offset.
+    Slot:
+      type: object
+      required:
+        - startsAt
+        - endsAt
+      properties:
+        startsAt:
+          allOf:
+            - $ref: '#/components/schemas/Rfc3339DateTime'
+          description: Start of the available interval.
+        endsAt:
+          allOf:
+            - $ref: '#/components/schemas/Rfc3339DateTime'
+          description: End of the available interval.
+      description: A computed free time interval for a selected event type.
+    UpdateEventTypeRequest:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        durationMinutes:
+          type: integer
+          format: int32
+        isActive:
+          type: boolean
+      description: Fields that can be changed on an event type.

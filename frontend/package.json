@@ -1,0 +1,33 @@
+{
+  "name": "calendar-service-frontend",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "dev:mock": "concurrently -k \"npm:mock\" \"npm:dev:mock-ui\"",
+    "dev:mock-ui": "VITE_API_BASE_URL=http://127.0.0.1:4010 vite",
+    "mock": "prism mock ../typespec/openapi/openapi.yaml --host 127.0.0.1 --port 4010",
+    "build": "tsc -b && vite build",
+    "typecheck": "tsc -b --pretty false",
+    "lint": "tsc -b --pretty false",
+    "test": "npm run typecheck",
+    "dev:real": "VITE_API_BASE_URL=http://localhost:8000/api npm run dev"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.66.0",
+    "date-fns": "^4.1.0",
+    "lucide-react": "^0.468.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@stoplight/prism-cli": "^5.14.2",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^4.4.1",
+    "concurrently": "^9.1.2",
+    "typescript": "~5.7.2",
+    "vite": "^6.0.5"
+  }
+}
