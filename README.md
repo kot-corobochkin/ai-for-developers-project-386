@@ -79,10 +79,14 @@ curl http://localhost:8000/api/public/owner
 ```
 
 Контейнер слушает порт из переменной `PORT` и подходит для Render Web Service.
-Готовый Render Blueprint находится в [render.yaml](render.yaml): в Render
-достаточно создать новый Blueprint из репозитория и выбрать этот файл. Render
-сам выдаст публичный URL вида `https://calendar-service-api.onrender.com`;
-после деплоя его нужно добавить сюда и в `.env` frontend как
+Готовый Render Blueprint находится в [render.yaml](render.yaml).
+
+Опубликованный backend:
+
+- [https://calendar-service-api.onrender.com](https://calendar-service-api.onrender.com)
+- Healthcheck: [https://calendar-service-api.onrender.com/health](https://calendar-service-api.onrender.com/health)
+
+Для frontend используется `.env` со значением
 `VITE_API_BASE_URL=<PUBLIC_URL>/api`.
 
 Для автодеплоя в GitHub добавьте secret `RENDER_DEPLOY_HOOK_URL` из настроек
