@@ -93,3 +93,6 @@ curl http://localhost:8000/api/public/owner
 Render Web Service. Workflow `Deploy to Render` будет запускать деплой после
 push в `main` или вручную через `workflow_dispatch`. Без этого secret workflow
 не выполняет шаг деплоя.
+
+### Hexlet tests and linter status:
+[![Actions Status](https://github.com/kot-corobochkin/ai-for-developers-project-386/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/kot-corobochkin/ai-for-developers-project-386/actions)
